@@ -1,21 +1,20 @@
-#
-# Copyright (C) 2014 The CyanogenMod Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
-# Overlays
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+
+$(call inherit-product-if-exists, vendor/samsung/degaswifi/degaswifi-vendor.mk)
+
 DEVICE_PACKAGE_OVERLAYS += device/samsung/degaswifi/overlay
+
+$(call inherit-product, build/target/product/full_base.mk)
+
+PRODUCT_CHARACTERISTICS := tablet
+
+# Screen size is "large", density is "mdpi", need "hdpi" for extra drawables
+PRODUCT_AAPT_CONFIG := large mdpi hdpi
+PRODUCT_AAPT_PREF_CONFIG := mdpi
+
+# we have enough storage space to hold precise GC data
+PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Hardware permissions
 PRODUCT_COPY_FILES += \
@@ -38,57 +37,79 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
 
-PRODUCT_CHARACTERISTICS := tablet
-
-# Enable higher-res drawables while keeping mdpi as primary source
-PRODUCT_AAPT_CONFIG := large mdpi hdpi xhdpi
-PRODUCT_AAPT_PREF_CONFIG := mdpi
-PRODUCT_LOCALES += mdpi
+# Set property overrides
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.heapsize=128m \
+    ro.carrier=wifi-only
 
 # Charger
 PRODUCT_PACKAGES += \
     charger \
     charger_res_images
 
-# Net
-PRODUCT_PACKAGES += \
-    libnetcmdiface
-
-# IR
-PRODUCT_PACKAGES += \
-    consumerir.mrvl
-
-# Wireless
-PRODUCT_PACKAGES += \
-    libMarvellWireless \
-    MarvellWirelessDaemon
-
-# Graphics
-PRODUCT_PACKAGES += \
-    libHWComposerGC \
-    gralloc.mrvl
-
-# Ramdisk
+# Graphics config
 PRODUCT_COPY_FILES += \
-    device/samsung/degaswifi/rootdir/fstab.pxa1088:root/fstab.pxa1088 \
-    device/samsung/degaswifi/rootdir/init_bsp.rc:root/init_bsp.rc \
-    device/samsung/degaswifi/rootdir/init_bsp.pxa1088.rc:root/init_bsp.pxa1088.rc \
-    device/samsung/degaswifi/rootdir/init.pxa1088.rc:root/init.pxa1088.rc \
-    device/samsung/degaswifi/rootdir/init.pxa1088.sensor.rc:root/init.pxa1088.sensor.rc \
-    device/samsung/degaswifi/rootdir/init.pxa1088.usb.rc:root/init.pxa1088.usb.rc \
-    device/samsung/degaswifi/rootdir/init_bsp.pxa1088.tel.rc:root/init_bsp.pxa1088.tel.rc \
-    device/samsung/degaswifi/rootdir/init.pxa1088.security.rc:root/init.pxa1088.security.rc \
-    device/samsung/degaswifi/rootdir/init.pxa1088.tel.rc:root/init.pxa1088.tel.rc \
-    device/samsung/degaswifi/rootdir/init.wifi.rc:root/init.wifi.rc \
-    device/samsung/degaswifi/rootdir/ueventd.pxa1088.rc:root/ueventd.pxa1088.rc
+    $(LOCAL_PATH)/configs/gfx.cfg:system/etc/gfx.cfg \
+    $(LOCAL_PATH)/configs/dms.cfg:system/etc/dms.cfg
+
+# fstab:
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/fstab.pxa1088:root/fstab.pxa1088 \
+
+# init.rc's:
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/init.recovery.pxa1088.rc:root/init.recovery.pxa1088.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa1088.rc:root/init.pxa1088.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa1088.usb.rc:root/init.pxa1088.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.pxa1088.tel.rc:root/init.pxa1088.tel.rc \
+    $(LOCAL_PATH)/rootdir/init_bsp.rc:root/init_bsp.rc \
+    $(LOCAL_PATH)/rootdir/init_bsp.pxa1088.rc:root/init_bsp.pxa1088.rc \
+    $(LOCAL_PATH)/rootdir/init_bsp.pxa1088.tel.rc:root/init_bsp.pxa1088.tel.rc
+
+# Init files
+PRODUCT_PACKAGES += \
+    fstab.pxa1088 \
+    init.pxa1088.rc \
+    init.pxa1088.usb.rc \
+    ueventd.pxa1088.rc
+    
+# uevent.rc
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/ueventd.pxa1088.rc:root/ueventd.pxa1088.rc
+
+# Audio
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
+
+# Wifi
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
+
+# Product specific Packages
+PRODUCT_PACKAGES += \
+    libsecril-client
+
+# RIL
+PRODUCT_PROPERTY_OVERRIDES += \
+    mobiledata.interfaces=wlan0
+
+# Disable SELinux
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.boot.selinux=disabled
+
+# GPS
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/sirfgps.conf:system/etc/sirfgps.conf
 
 # Misc
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
 
-# ADB BOOT
-ADDITIONAL_DEFAULT_PROPERTIES += \
-   ro.adb.secure=0 \
-   ro.secure=0
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    VisualizationWallpapers \
+    librs_jni
 
 $(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
