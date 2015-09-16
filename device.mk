@@ -49,22 +49,22 @@ PRODUCT_PACKAGES += \
 
 # Graphics config
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gfx.cfg:system/etc/gfx.cfg \
-    $(LOCAL_PATH)/configs/dms.cfg:system/etc/dms.cfg
+    device/samsung/degaswifi/configs/gfx.cfg:system/etc/gfx.cfg \
+    device/samsung/degaswifi/configs/dms.cfg:system/etc/dms.cfg
 
 # fstab:
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/fstab.pxa1088:root/fstab.pxa1088 \
+    device/samsung/degaswifi/rootdir/fstab.pxa1088:root/fstab.pxa1088 \
 
 # init.rc's:
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.recovery.pxa1088.rc:root/init.recovery.pxa1088.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa1088.rc:root/init.pxa1088.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa1088.usb.rc:root/init.pxa1088.usb.rc \
-    $(LOCAL_PATH)/rootdir/init.pxa1088.tel.rc:root/init.pxa1088.tel.rc \
-    $(LOCAL_PATH)/rootdir/init_bsp.rc:root/init_bsp.rc \
-    $(LOCAL_PATH)/rootdir/init_bsp.pxa1088.rc:root/init_bsp.pxa1088.rc \
-    $(LOCAL_PATH)/rootdir/init_bsp.pxa1088.tel.rc:root/init_bsp.pxa1088.tel.rc
+    device/samsung/degaswifi/rootdir/init.recovery.pxa1088.rc:root/init.recovery.pxa1088.rc \
+    device/samsung/degaswifi/rootdir/init.pxa1088.rc:root/init.pxa1088.rc \
+    device/samsung/degaswifi/rootdir/init.pxa1088.usb.rc:root/init.pxa1088.usb.rc \
+    device/samsung/degaswifi/rootdir/init.pxa1088.tel.rc:root/init.pxa1088.tel.rc \
+    device/samsung/degaswifi/rootdir/init_bsp.rc:root/init_bsp.rc \
+    device/samsung/degaswifi/rootdir/init_bsp.pxa1088.rc:root/init_bsp.pxa1088.rc \
+    device/samsung/degaswifi/rootdir/init_bsp.pxa1088.tel.rc:root/init_bsp.pxa1088.tel.rc
 
 # Init files
 PRODUCT_PACKAGES += \
@@ -75,15 +75,15 @@ PRODUCT_PACKAGES += \
     
 # uevent.rc
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/ueventd.pxa1088.rc:root/ueventd.pxa1088.rc
+    device/samsung/degaswifi/rootdir/ueventd.pxa1088.rc:root/ueventd.pxa1088.rc
 
 # Audio
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
+    device/samsung/degaswifi/configs/audio_policy.conf:system/etc/audio_policy.conf
 
 # Wifi
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
+    device/samsung/degaswifi/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
 
 # Product specific Packages
 PRODUCT_PACKAGES += \
@@ -94,12 +94,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
 
 # Disable SELinux
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.boot.selinux=disabled
+#PRODUCT_PROPERTY_OVERRIDES += \
+#    ro.boot.selinux=disabled
 
 # GPS
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/sirfgps.conf:system/etc/sirfgps.conf
+    device/samsung/degaswifi/configs/sirfgps.conf:system/etc/sirfgps.conf
 
 # Misc
 PRODUCT_PACKAGES += \

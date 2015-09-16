@@ -72,7 +72,7 @@ BOARD_HAS_NO_MISC_PARTITION := true
 
 # Recovery
 TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
-TARGET_RECOVERY_FSTAB := device/samsung/degaswifi/rootdir/fstab.pxa988
+TARGET_RECOVERY_FSTAB := device/samsung/degaswifi/rootdir/fstab.pxa1088
 RECOVERY_FSTAB_VERSION := 2
 BOARD_RECOVERY_SWIPE := true
 
@@ -150,11 +150,8 @@ BOARD_SEPOLICY_UNION += \
     init.te \
     mediaserver.te \
     netmgrd.te \
-    rild.te \
     secril.te \
-    system.te \
-    ueventd.te \
-    wpa_supplicant.te
+    ueventd.te 
 
 #TWRP
 DEVICE_RESOLUTION := 800x1280

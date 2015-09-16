@@ -1,3 +1,0 @@
-# Allow vold to relabel sdcard fs mounts
-allow vold unlabeled:filesystem { relabelfrom };
-allow vold sdcard_external:filesystem { relabelfrom relabelto };
