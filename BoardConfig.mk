@@ -34,7 +34,7 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := degaswifi
+#TARGET_OTA_ASSERT_DEVICE := degaswifi
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
@@ -62,14 +62,31 @@ USE_OPENGL_RENDERER := true
 ENABLE_HWC_GC_PATH := true
 
 # Kernel
+BOARD_USES_MRVL_KERNELBUILD := true
 TARGET_KERNEL_SOURCE := kernel/samsung/degaswifi
-TARGET_KERNEL_CONFIG := pxa1088_degaswifi_eur_defconfig
+TARGET_KERNEL_CONFIG := carmilla-pxa1088_defconfig
+#TARGET_KERNEL_CONFIG := pxa1088_degaswifi_eur_defconfig
+#TARGET_KERNEL_VARIANT_CONFIG := selinux_defconfig
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/degaswifi/degaswifi_mkbootimg.mk
 BOARD_MKBOOTIMG_ARGS := --dt device/samsung/degaswifi/rootdir/boot.img-dt --ramdisk_offset 0x01000000
-BOARD_KERNEL_CMDLINE := androidboot.selinux=disabled
+BOARD_KERNEL_CMDLINE := 
 BOARD_KERNEL_PAGESIZE := 2048
     
+# Kernel Modules
+##SAMSUNG_MODULES:
+#	make -C kernel/samsung/degaswifi_modules/ clean_modules KERNELDIR=$(KERNEL_OUT) CROSS_COMPILE=$(ANDROID_TOOLCHAIN)/arm-linux-androideabi-
+#	make -C kernel/samsung/degaswifi_modules/ modules CFLAGS_MODULE=-fno-pic KERNELDIR=$(KERNEL_OUT) CROSS_COMPILE=$(ANDROID_TOOLCHAIN)/arm-linux-androideabi-
+##	mkdir -p out/target/product/degaswifi/root/lib/modules
+##	cd $(OUT)
+##	find out/target/product/degaswifi/obj/KERNEL_OBJ/drivers/ -type f -name *.ko -exec cp {} root/lib/modules \;
+#	find kernel/samsung/degaswifi_modules/ -type f -name *.ko -exec cp {} $(KERNEL_MODULES_OUT) \;
+
+##TARGET_KERNEL_MODULES += SAMSUNG_MODULES
+
+KERNEL_MODULES_INSTALL := root
+#KERNEL_MODULES_OUT := $(TARGET_OUT)/lib/modules
+
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 12582912
