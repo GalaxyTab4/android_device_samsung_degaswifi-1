@@ -12,9 +12,8 @@ on init
     setprop ro.board.platform mrvl
 
     write /proc/sys/vm/legacy_va_layout 1
-
     # for control LCD backlight
-    chown system system /sys/class/backlight/lcd-bl/brightness
+    chown system system /sys/class/backlight/emei-bl/brightness
 
     # for sd8xxx wifi and bluetooth power
     chown system system /sys/class/rfkill/rfkill0/state
@@ -38,7 +37,6 @@ on init
     chown system system /sys/devices/system/cpu/hotplug/load_l1
     chown system system /sys/devices/system/cpu/hotplug/lock
     chown system system /sys/devices/system/cpu/cpu1/online
-
     chmod 0644 /sys/devices/system/cpu/hotplug/bound_freq
     chmod 0644 /sys/devices/system/cpu/hotplug/load_h0
     chmod 0644 /sys/devices/system/cpu/hotplug/load_l1
@@ -60,34 +58,48 @@ on init
     #keypad wakeup source
     chown system system /sys/devices/platform/pxa27x-keypad/power/wakeup
 
+    #keypad wakeup source
+    chown system system /proc/driver/pm800_headset
+
+    #lcd for dip channel
+    chmod 664 /sys/devices/platform/pxa168-fb.0/lcd    
+    chown system system /sys/devices/platform/pxa168-fb.0/lcd
+
+    #cpu&ddr for dip channel
+    chmod 664 /sys/devices/platform/devfreq-ddr/devfreq/devfreq-ddr/min_freq
+    chmod 664 /sys/devices/platform/devfreq-ddr/devfreq/devfreq-ddr/max_freq
+    chmod 664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/platform/devfreq-ddr/devfreq/devfreq-ddr/min_freq
+    chown system system /sys/devices/platform/devfreq-ddr/devfreq/devfreq-ddr/max_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+
     #pm runtime
-    chown system system /sys/bus/i2c/devices/2-0039/power/control
+    chown system system /sys/bus/i2c/devices/4-0048/power/control
     chown system system /sys/devices/platform/pxa168-fb.0/power/control
     chown system system /sys/devices/platform/pxa168-fb.1/power/control
     chown system system /sys/devices/platform/mrvl8xxx_fm.0/power/control
+    chown system system /sys/devices/platform/Sec_BattMonitor/power/control
 
     #autosleep
     chown system system /sys/power/autosleep
-
     chown system system /sys/class/power_supply/battery/device/calibration
+
     chown system system /proc/driver/sirf
 
     chown system system /sys/class/graphics/fb0/device/vsync
     chmod 0660 /sys/class/graphics/fb0/device/vsync
-
     #GSSP device
-    chown media system /sys/bus/platform/drivers/pxa-ssp-dai/pxa-ssp-dai.2/gssp_mfp
-    chmod 0644 /sys/bus/platform/drivers/pxa-ssp-dai/pxa-ssp-dai.2/gssp_mfp
+    chown system system /proc/driver/pcm_mfp
+    chmod 0666 /proc/driver/pcm_mfp
 
     # master/slave
-    chown media system /sys/devices/platform/sound/ssp_master
-    chmod 0644 /sys/devices/platform/sound/ssp_master
+    chown system system /proc/driver/ssp_master
+    chmod 0666 /proc/driver/ssp_master
 
-    chown media system /sys/devices/platform/sound/gssp_master
-    chmod 0644 /sys/devices/platform/sound/gssp_master
-
-    chown media system /sys/devices/platform/sound/gssp_record
-    chmod 0644 /sys/devices/platform/sound/gssp_record
+    chown system system /proc/driver/gssp_master
+    chmod 0666 /proc/driver/gssp_master
 
     #set ap as master, codec/BT as slave
     setprop persist.audio.apmaster 1
@@ -97,10 +109,12 @@ on init
 
     #enable DRM service
     setprop drm.service.enabled true
+    setprop battery.fake_ac 0
 
-    setprop battery.fake_ac 1
-
-on fs 
+on fs
+    # mount /system rw first to give the filesystem a chance to save a checkpoint
+    # mount ext4 /dev/block/mmcblk0p14 /system
+    # mount ext4 /dev/block/mmcblk0p14 /system ro remount
 
     # mount /data by fstab to support encryption.
     mount_all /fstab.pxa1088
@@ -123,16 +137,16 @@ on post-fs-data
 
     # create folder to save wifi/bt config files with mac address, and calibrate files
     mkdir /data/misc/wireless 0771 system system
-
     # create filesystem for wifi & dhcp
     mkdir /data/misc/wifi 0771 wifi wifi
     mkdir /data/misc/wifi/sockets 0771 wifi wifi
-    mkdir /data/misc/wifi/wapi_certs 0777 wifi wifi
+    mkdir /data/misc/wifi/wapi_certs 0775 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
 
     # for blcr
-    mkdir /data/blcr 0775 system system
+    #mkdir /data/blcr 0775 system system
+
 on boot
     setprop ro.media.gst.enabled 1
     setprop service.camera.af 1
@@ -143,12 +157,16 @@ on boot
 on property:persist.sys.dump.enable=1
     write /sys/power/panic CRASH_ENABLE
 
-#on property:persist.sys.tools.enable=1
-#    mkdir /data/vendor
-#    mount ext4 /dev/block/mmcblk0p16 /data/vendor
-#    chown system system /data/vendor
-#    chmod 0755 /data/vendor
-#
-#on property:persist.sys.tools.enable=0
-#    exec /system/bin/umount /data/vendor
+on property:persist.sys.tools.enable=1
+    mkdir /data/vendor
+    mount ext4 /dev/block/mmcblk0p15 /data/vendor
+    chown system system /data/vendor
+    chmod 0755 /data/vendor
+
+on property:persist.sys.tools.enable=0
+    exec /system/bin/umount /data/vendor
+
+
+
+
 

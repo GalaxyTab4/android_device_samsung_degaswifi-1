@@ -93,8 +93,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
 
 # Disable SELinux
-#PRODUCT_PROPERTY_OVERRIDES += \
-#    ro.boot.selinux=disabled
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.boot.selinux=disabled
 
 # GPS
 #PRODUCT_COPY_FILES += \

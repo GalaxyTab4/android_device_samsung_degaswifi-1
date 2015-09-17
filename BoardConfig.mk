@@ -47,17 +47,8 @@ BOARD_KERNEL_CMDLINE :=
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000
 BOARD_KERNEL_PAGESIZE := 2048
-# TARGET_PREBUILT_KERNEL := 
+BOARD_CUSTOM_BOOTIMG_MK := device/samsung/degaswifi/degaswifi_mkbootimg.mk
 
-#Kernel Modules
-#SAMSUNG_MODULES:
-#	make -C kernel/samsung/lt02_modules/ clean_modules KERNELDIR=$(KERNEL_OUT) CROSS_COMPILE=$(ANDROID_TOOLCHAIN)/arm-linux-androideabi-
-#	make -C kernel/samsung/lt02_modules/ modules CFLAGS_MODULE=-fno-pic KERNELDIR=$(KERNEL_OUT) CROSS_COMPILE=$(ANDROID_TOOLCHAIN)/arm-linux-androideabi-
-#	mkdir -p out/target/product/degaswifi/recovery/root/lib/modules
-#	cp $(KERNEL_OUT)/drivers/exfat/*.ko out/target/product/degaswifi/recovery/root/lib/modules/
-#	find kernel/samsung/lt02_modules/ -type f -name *.ko -exec cp {} $(KERNEL_MODULES_OUT) \;
-
-#TARGET_KERNEL_MODULES += SAMSUNG_MODULES
     
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -150,8 +141,10 @@ BOARD_SEPOLICY_UNION += \
     init.te \
     mediaserver.te \
     netmgrd.te \
-    secril.te \
-    ueventd.te 
+    rild.te \
+    system.te \
+    ueventd.te \
+    wpa_supplicant.te
 
 #TWRP
 DEVICE_RESOLUTION := 800x1280

@@ -1,0 +1,33 @@
+From ec9c1dfa000208092ec6b2bc7ebc51fc1475cc41 Mon Sep 17 00:00:00 2001
+From: sub77 <sub77@ymail.com>
+Date: Thu, 17 Sep 2015 08:38:49 -0400
+Subject: [PATCH] [PATCH] Do not abort on additional SYSTEMSERVERCLASSPATH
+ entries
+
+Change-Id: Ie50694483c23773a33caeb2d152241e30d5b0422
+---
+ runtime/native/dalvik_system_DexFile.cc | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/runtime/native/dalvik_system_DexFile.cc b/runtime/native/dalvik_system_DexFile.cc
+index 3298b46..50aa44c 100644
+--- a/runtime/native/dalvik_system_DexFile.cc
++++ b/runtime/native/dalvik_system_DexFile.cc
+@@ -382,14 +382,6 @@ static jbyte IsDexOptNeededInternal(JNIEnv* env, const char* filename,
+   // Logging of reason for returning kDexoptNeeded or kPatchoatNeeded.
+   const bool kReasonLogging = true;
+ 
+-  if ((filename == nullptr) || !OS::FileExists(filename)) {
+-    LOG(ERROR) << "DexFile_isDexOptNeeded file '" << filename << "' does not exist";
+-    ScopedLocalRef<jclass> fnfe(env, env->FindClass("java/io/FileNotFoundException"));
+-    const char* message = (filename == nullptr) ? "<empty file name>" : filename;
+-    env->ThrowNew(fnfe.get(), message);
+-    return kUpToDate;
+-  }
+-
+   // Always treat elements of the bootclasspath as up-to-date.  The
+   // fact that code is running at all means that this should be true.
+   Runtime* runtime = Runtime::Current();
+-- 
+1.9.1
+

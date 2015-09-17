@@ -1,49 +1,23 @@
-## fstab has the following format:
-##
-## Any line starting with a # is a comment and ignored
-##
-## Any blank line is ignored
-##
-## All other lines must be in this format:
-##   <source>  <mount_point> <fs_type> <mount_flags> <fs_options> <fs_mgr_options>
-##
-##   <mount_flags> is a comma separated list of flags that can be passed to the
-##                 mount command.  The list includes noatime, nosuid, nodev, nodiratime,
-##                 ro, rw, remount, defaults.
-##
-##   <fs_options> is a comma separated list of options accepted by the filesystem being
-##                mounted.  It is passed directly to mount without being parsed
-##
-##   <fs_mgr_options> is a comma separated list of flags that control the operation of
-##                     the fs_mgr program.  The list includes "wait", which will wait till
-##                     the <source> file exists, and "check", which requests that the fs_mgr
-##                     run an fscheck program on the <source> before mounting the filesystem.
-##                     If check is specifed on a read-only filesystem, it is ignored.
-##                     Also, "encryptable" means that filesystem can be encrypted.
-##                     The "encryptable" flag _MUST_ be followed by a : and a string which
-##                     is the location of the encryption keys.  I can either be a path
-##                     to a file or partition which contains the keys, or the word "footer"
-##                     which means the keys are in the last 16 Kbytes of the partition
-##                     containing the filesystem.
-##
-## When the fs_mgr is requested to mount all filesystems, it will first mount all the
-## filesystems that do _NOT_ specify check (including filesystems that are read-only and
-## specify check, because check is ignored in that case) and then it will check and mount
-## filesystem marked with check.
-##
-##
-/dev/block/platform/soc.2/by-name/RECOVERY   /recovery     emmc     defaults     defaults
-/dev/block/platform/soc.2/by-name/KERNEL     /boot         emmc     defaults     defaults
-/dev/block/platform/soc.2/by-name/SYSTEM     /system       ext4     ro,errors=panic                                                                                                                 wait
-/dev/block/platform/soc.2/by-name/CACHE        /cache        ext4      nosuid,nodev,noatime,noauto_da_alloc,discard,journal_async_commit,errors=panic   wait,check
-/dev/block/platform/soc.2/by-name/USER         /data           ext4      nosuid,nodev,noatime,noauto_da_alloc,discard,journal_async_commit,errors=panic    wait,encryptable=footer,check
-/dev/block/platform/soc.2/by-name/EFS            /efs             ext4      nosuid,nodev,noatime,noauto_da_alloc,discard,journal_async_commit,errors=panic    wait,check
+# Android fstab file.
+#<src>                                         <mnt_point>          <type>    <mnt_flags and options>                                                           <fs_mgr_flags>
+# The filesystem that contains the filesystem checker binary (typically /system) cannot
+# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+# data partition must be located at the bottom for supporting device encryption
 
-# VOLD
-/devices/platform/sdhci-pxav3.0/mmc_host/mmc1,/devices/platform/soc.2/d4200000.axi/sdhci-pxav3.0/mmc_host/mmc1/mmc1				auto 					vfat	default		voldmanaged=extSdCard:auto,noemulatedsd
-/devices/platform/xhci-hcd/usb1*sda            auto                    vfat    default     voldmanaged=UsbDriveA:auto
-/devices/platform/xhci-hcd/usb1*sdb            auto                    vfat    default     voldmanaged=UsbDriveB:auto
-/devices/platform/xhci-hcd/usb1*sdc            auto                    vfat    default     voldmanaged=UsbDriveC:auto
-/devices/platform/xhci-hcd/usb1*sdd            auto                    vfat    default     voldmanaged=UsbDriveD:auto
-/devices/platform/xhci-hcd/usb1*sde            auto                    vfat    default     voldmanaged=UsbDriveE:auto
-/devices/platform/xhci-hcd/usb1*sdf           auto                    vfat    default     voldmanaged=UsbDriveF:auto
+/dev/block/platform/soc.2/by-name/SYSTEM      /system              ext4      ro,noatime                                                                        wait
+/dev/block/platform/soc.2/by-name/EFS         /efs                 ext4      noatime,nosuid,nodev,journal_async_commit,errors=panic                            wait,check
+/dev/block/platform/soc.2/by-name/CACHE       /cache               ext4      noatime,nosuid,nodev,journal_async_commit,errors=panic                            wait,check
+/dev/block/platform/soc.2/by-name/USER	      /data                ext4      noatime,nosuid,nodev,discard,noauto_da_alloc,journal_async_commit,errors=panic    wait,check,encryptable=footer
+/dev/block/platform/soc.2/by-name/NVM	      /NVM                 ext4      nosuid,nodev,nodelalloc,noauto_da_alloc,		    							   wait,check
+/dev/block/platform/soc.2/by-name/HIDDEN	  /sub                 ext4      nosuid,nodev,nodelalloc,noauto_da_alloc,		    							   wait,check
+/dev/block/platform/soc.2/by-name/KERNEL      /boot                emmc      defaults    recoveryonly
+/dev/block/platform/soc.2/by-name/RECOVERY    /recovery            emmc      defaults    recoveryonly
+/dev/block/platform/soc.2/by-name/MODEM		  /modem               emmc      defaults    recoveryonly
+/dev/null                                             /sdcard       	   datamedia  defaults                recoveryonly
+# External SD Card
+/devices/platform/sdhci-pxav3.0/mmc_host/mmc1 	  	  auto                 auto      defaults    voldmanaged=sdcard1:auto
+
+
+
+
+
