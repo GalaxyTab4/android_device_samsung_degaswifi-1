@@ -49,8 +49,7 @@ PRODUCT_PACKAGES += \
 
 # Graphics config
 PRODUCT_COPY_FILES += \
-    device/samsung/degaswifi/configs/gfx.cfg:system/etc/gfx.cfg \
-    device/samsung/degaswifi/configs/dms.cfg:system/etc/dms.cfg
+    device/samsung/degaswifi/configs/gfx.cfg:system/etc/gfx.cfg
 
 # fstab:
 PRODUCT_COPY_FILES += \
@@ -98,8 +97,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 #    ro.boot.selinux=disabled
 
 # GPS
-PRODUCT_COPY_FILES += \
-    device/samsung/degaswifi/configs/sirfgps.conf:system/etc/sirfgps.conf
+#PRODUCT_COPY_FILES += \
+#    device/samsung/degaswifi/configs/sirfgps.conf:system/etc/sirfgps.conf
 
 # Misc
 PRODUCT_PACKAGES += \
